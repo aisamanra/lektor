@@ -154,10 +154,10 @@ various sequence numbers, and `$host` is its host name.
 - If `stat()` returned anything other than `ENOENT`, the program sleeps
 for two seconds, updates `$time`, and tries the `stat()` again, a limited
 number of times.
-- The fetcher creates the directory `tmp/$feed/$time.$pid.$host`.
+- The fetcher creates the directory `tmp/$feed/$time.$uniq.$host`.
 - The fetcher writes the entry contents (according to the `lektor-entry`
 format) to the directory.
-- The fetcher moves the file to `new/$feed/$time.$pid.$host`. At that
+- The fetcher moves the file to `new/$feed/$time.$uniq.$host`. At that
 instant, the entry has been successfully created.
 
 A _viewer_ is responsible for displaying new feed entries to a user
