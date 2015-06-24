@@ -122,7 +122,7 @@ FEED=80af8e84e5ef7ae6b68acb8d1987e58e3e5731dd
 echo 'Example Entry'               >title
 echo 'http://example.com/example'  >id
 echo 'A sample entry.'             >content
-ln -s $LEKTOR-DIR/src/$FEED          feed
+ln -s $LEKTORDIR/src/$FEED          feed
 ~~~
 
 A full entry might look like
@@ -136,7 +136,7 @@ echo 'A sample entry.'                       >content
 echo 'Getty Ritter <gettyritter@gmail.com>'  >author
 echo '2015-06-23T13:06:22Z'                  >pubdate
 echo 'text/html'                             >type
-ln -s $LEKTOR-DIR/src/$FEED                    feed
+ln -s $LEKTORDIR/src/$FEED                    feed
 ~~~
 
 ## `lektor-dir`
