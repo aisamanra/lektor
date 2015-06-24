@@ -1,18 +1,9 @@
 # Lektor: A Standard for Feed Readers
 
-**NOTE:** The entirety of this file is tentative, and subject to change
-at any time.
-
-There are two main tasks for a feed reader: _fetching_ and _viewing_.
-These two tasks, in the `lektor` system, are split apart into different
-components, mediated by a `lektor-dir` system. A `lektor-dir` contains
-two kinds of information: information about feeds (sources of new
-entries) and information about entries themselves.
-
 # At A Glance
 
 A given user has their own `lektor-dir`. A `lektor-dir` contains both
-"feeds" and "entries". Two kinds of programs operate on `lektordir`s
+"feeds" and "entries". Two kinds of programs operate on `lektor-dir`s
 in two different capcities: a _fetcher_ produces entries for one or
 more feeds, and a _viewer_ manages entries once produced and shows
 them to some user. A given `lektor-dir` can have multiple fetchers
@@ -41,9 +32,9 @@ The rationale for these decisions is this:
 
 ## `lektor-feed`
 
-A given `feed` consists of at least a `name` (which is human-readable)
-and an `id` which unambiguously identifies the `feed` (which is
-a URI). Information about `feed`s is stored in the `src` directory
+A given `feed` consists of at least a human-readable `name`
+and a URI `id` which unambiguously identifies the `feed`.
+Information about `feed`s is stored in the `src` directory
 inside a `lektor-dir`. Information about a given feed is stored inside
 `src/$hash`, where `$hash` is the SHA-1 hash of of the `feed`'s `id`.
 
@@ -53,9 +44,11 @@ Obligatory elements for a `feed` include:
 RSS/Atom/ActivityStream feeds, this will generally be the URL at
 which the feed is hosted. For other things—for example, for
 services which may not have a web equivalent—it might instead be
-a tag URI or some other opaque identifier.
+a [tag URI](http://tools.ietf.org/html/rfc4151) or some other
+opaque identifier.
 - `name`: The human-readable name of the feed. This is
-produced by the fetcher and should not be changed by a viewer.
+produced by the fetcher and should not be changed by a viewer,
+even if a user wants to alias the name to something else.
 
 Optional elements for a `feed` include:
 
@@ -223,7 +216,7 @@ mkdir -p "new/$HASH"
 # create entries every hour
 while true; do
     TIME=$(date '+%s')
-    ENTRY="$HASH/$TIME.$$.$HOST"
+    ENTRY="$HASH/$TIME.P$$.$HOST"
 
     # if the file exists, wait two seconds and try again
     RETRY=0
