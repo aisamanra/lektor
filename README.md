@@ -105,7 +105,9 @@ Obligatory elements for an `entry` include:
 - `id`: The URI which identifies the entry. This will often be a
 URL at which the resource corresponding to the entry is available,
 but may also be an opaque identifier.
-- `content`: **TBD**
+- `content`: Some kind of content. If no `type` element is present,
+then the `content` is assumed to be plain text; otherwise, the
+`type` element will dictate the format of the content.
 - `feed`: A directory that contains all the information about the
 source `feed`. This will generally be a soft link to the relevant
 `feed` directory, but programs should not assume that it is.
@@ -151,10 +153,11 @@ A `lektor-dir` is a directory with at least four subdirectories: `tmp`,
 and adding new entries the `lektor-dir` according to the following process:
 
 - The fetcher `chdir()`s to the `lektor-dir` directory.
-- The fetcher `stat()`s the name `tmp/$feed/$time.$pid.$host`, where
+- The fetcher `stat()`s the name `tmp/$feed/$time.$uniq.$host`, where
 `$feed` is the hash of the feed's `id` value, `$time`
-is the number of seconds since the beginning of 1970 GMT, `$pid` is the
-program's process ID, and `$host` is its host name.
+is the number of seconds since the beginning of 1970 GMT, `$uniq` is a
+combination of unique elements possibly including the process `pid` or
+various sequence numbers, and `$host` is its host name.
 - If `stat()` returned anything other than `ENOENT`, the program sleeps
 for two seconds, updates `$time`, and tries the `stat()` again, a limited
 number of times.
