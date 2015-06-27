@@ -4,6 +4,10 @@
 
 module Main where
 
+import qualified Lektor as L
+
+import qualified Atom as A
+
 import Control.Monad (zipWithM_)
 import Data.ByteString.Lazy.Char8 (pack)
 import Data.Digest.Pure.SHA
@@ -13,12 +17,14 @@ import Network.HostName
 import Network.HTTP
 import System.Directory
 import System.Environment
-import System.Exit (die)
+-- import System.Exit (die)
 import System.FilePath ((</>))
 import System.Posix.Process (getProcessID)
 import Text.Atom.Feed.Import (elementFeed)
 import Text.Atom.Feed
 import Text.XML.Light.Input (parseXMLDoc)
+
+die = error
 
 usage :: String
 usage = "Usage: lektor-rss [feed url]"
