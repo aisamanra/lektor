@@ -27,8 +27,8 @@ toEntry Entry { .. } = L.Entry
   , L.entryTitle   = toString entryTitle
   , L.entryContent = maybe "" entryToString entryContent
   , L.entryAuthor  = toPeople entryAuthors
-  , L.entryPubdate = undefined
-  , L.entryType    = undefined
+  , L.entryPubdate = Just entryUpdated
+  , L.entryType    = fmap entryToType entryContent
   }
 
 toString :: TextContent -> String
@@ -42,6 +42,11 @@ entryToString (HTMLContent s)       = s
 entryToString (XHTMLContent e)      = showElement e
 entryToString (MixedContent _ _)    = "[unimplemented]"
 entryToString (ExternalContent _ _) = "[unimplemented]"
+
+entryToType :: EntryContent -> String
+entryToType HTMLContent {}  = "text/html"
+entryToType XHTMLContent {} = "text/xhtml"
+entryToType _               = "text/plain"
 
 toPeople :: [Person] -> Maybe String
 toPeople [] = Nothing

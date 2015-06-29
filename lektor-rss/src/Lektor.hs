@@ -1,11 +1,11 @@
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 
 module Lektor
   ( Feed(..)
   , Entry(..)
   , mkFeed
   , mkEntry
+  , writeAll
   , writeFeed
   , writeEntry
   ) where
@@ -20,6 +20,7 @@ import System.Directory
 import System.FilePath ((</>))
 import System.Posix.Files (createSymbolicLink)
 import System.Posix.Process (getProcessID)
+import System.Random (randomIO)
 
 mkdirP :: FilePath -> IO ()
 mkdirP = createDirectoryIfMissing True
@@ -57,6 +58,11 @@ mkEntry :: String -> String -> String -> Entry
 mkEntry entryId entryTitle entryContent =
   Entry entryId entryTitle entryContent Nothing Nothing Nothing
 
+writeAll :: (Feed, [Entry]) -> IO ()
+writeAll (feed, entries) = do
+  writeFeed feed
+  mapM_ (writeEntry feed) entries
+
 writeFeed :: Feed -> IO ()
 writeFeed Feed { .. } = do
   let dir = "src" </> hash feedId
@@ -69,11 +75,12 @@ writeFeed Feed { .. } = do
   writeFileMb (dir </> "copyright")   feedCopy
   writeFileMb (dir </> "author")      feedAuthor
 
-writeEntry :: Entry -> Feed -> IO ()
-writeEntry (Entry { .. }) (Feed { feedId = feedId }) = do
+writeEntry :: Feed -> Entry -> IO ()
+writeEntry (Feed { feedId = feedId }) (Entry { .. }) = do
   let feedHash = hash feedId
   uniq <- mkUniq
   let dir = "tmp" </> feedHash </> uniq
+  cwd <- getCurrentDirectory
   mkdirP dir
   mkdirP ("new" </> hash feedId)
   writeFile   (dir </> "id")      entryId
@@ -82,15 +89,18 @@ writeEntry (Entry { .. }) (Feed { feedId = feedId }) = do
   writeFileMb (dir </> "author")  entryAuthor
   writeFileMb (dir </> "pubdate") entryPubdate
   writeFileMb (dir </> "type")    entryType
-  createSymbolicLink (dir </> "feed") ("src" </> feedHash)
+  createSymbolicLink (cwd </> "src" </> feedHash) (dir </> "feed")
   renameDirectory dir ("new" </> feedHash </> uniq)
+
+integer :: Integer -> Integer
+integer = id
 
 mkUniq :: IO String
 mkUniq = do
-  (t :: Integer, r') <- properFraction `fmap` getPOSIXTime
-  let r = filter isDigit (show r')
-  let m = ""
+  (t, m') <- properFraction `fmap` getPOSIXTime
+  let m = filter isDigit (show m')
+  r <- abs `fmap` randomIO
   p <- getProcessID
   h <- getHostName
-  let uniq = "P" <> show p <> "R" <> r <> "M" <> m
-  return (show t <> "." <> uniq <> "." <> h)
+  let uniq = "P" <> show p <> "R" <> show (integer r) <> "M" <> m
+  return (show (integer t) <> "." <> uniq <> "." <> h)
