@@ -8,6 +8,7 @@ module Lektor
   , writeAll
   , writeFeed
   , writeEntry
+  , writeSetup
   ) where
 
 import Data.ByteString.Lazy.Char8 (pack)
@@ -17,6 +18,7 @@ import Data.Monoid ((<>))
 import Data.Time.Clock.POSIX (getPOSIXTime)
 import Network.HostName (getHostName)
 import System.Directory
+import System.Environment (getEnv)
 import System.FilePath ((</>))
 import System.Posix.Files (createSymbolicLink)
 import System.Posix.Process (getProcessID)
@@ -58,8 +60,16 @@ mkEntry :: String -> String -> String -> Entry
 mkEntry entryId entryTitle entryContent =
   Entry entryId entryTitle entryContent Nothing Nothing Nothing
 
+writeSetup :: IO ()
+writeSetup = do
+  dir <- getEnv "LEKTORDIR"
+  setCurrentDirectory dir
+  mapM_ (createDirectoryIfMissing True)
+    [ "src", "tmp", "new", "cur" ]
+
 writeAll :: (Feed, [Entry]) -> IO ()
 writeAll (feed, entries) = do
+  writeSetup
   writeFeed feed
   mapM_ (writeEntry feed) entries
 

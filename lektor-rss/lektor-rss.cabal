@@ -14,8 +14,7 @@ executable lektor-rss
   main-is:              Main.hs
   default-language:     Haskell2010
   ghc-options:          -Wall
-  build-depends:        base >= 4 && < 5, feed, HTTP, SHA, xml, bytestring, directory, filepath, hostname, time, unix, random
-
+  build-depends:        base >= 4 && < 5, feed, HTTP, SHA, xml, bytestring, directory, filepath, hostname, time, unix, random, errors, transformers
 source-repository head
   type:                 git
 --  Location:
