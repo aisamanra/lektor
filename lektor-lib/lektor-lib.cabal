@@ -1,0 +1,28 @@
+name:                   lektor-lib
+version:                0.0.0
+author:                 Getty Ritter<gettylefou@gmail.com>
+maintainer:             Getty Ritter<gettylefou@gmail.com>
+license:                BSD3
+license-file:           LICENSE
+-- synopsis:
+-- description:
+cabal-version:          >= 1.10
+build-type:             Simple
+
+library
+  exposed-modules:      Text.Lektor
+  default-language:     Haskell2010
+  ghc-options:          -Wall
+  build-depends:        base >= 4 && < 5,
+                        SHA,
+                        directory,
+                        bytestring,
+                        filepath,
+                        hostname,
+                        time,
+                        unix,
+                        random,
+                        errors
+source-repository head
+  type:                 git
+  location:             https://github.com/aisamanra/lektor/
